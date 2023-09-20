@@ -31,6 +31,13 @@ var images = new ImageCollection([
     {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"}
 ]);
 
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+
 class Timer {
 	constructor(x,y,width,height,color) {
 		this.x = x
@@ -119,11 +126,9 @@ const tmax = new Timer(100,50,200,50,'blue')
 tmax.draw()
 const tcur = new Timer(100,50,200,50,'green')
 tcur.draw()
-const enemy = new Enemy(300,200,200,'red')
-// enemy.draw()
 c.drawImage(images.get("enemy"),100,100)
-const eprep = new Enemy(300,200,100,'green')
-const eatk  = new Enemy(300,200,100,'blue')
+// const eprep = new Enemy(300,200,100,'green')
+// const eatk  = new Enemy(300,200,100,'blue')
 const atk = new Button(1000,600,100,'atk')
 atk.draw()
 c.font = "bold 36px Ariel"
@@ -168,9 +173,10 @@ function animate() {
 	else if (isDefending && tcur.width<=t2){
 		window.removeEventListener('mousemove',defending)
 		pause=true
+		c.clearRect(690,390,310,210)
 		c.font = "bold 72px Ariel"
 		c.fillStyle = "#FF0000"
-		c.fillText("煉獄！",750,550)
+		c.fillText("碰！",750,550)
 		isDefending = false
 		canAttack = true
 		c.drawImage(images.get("eatk"),100,100)
@@ -181,6 +187,9 @@ function animate() {
 	}
 	else if (isDefending && tcur.width<=t1){
 		c.drawImage(images.get("eprep"),100,100)
+		c.font = "bold 72px Ariel"
+		c.fillStyle = "#000000"
+		c.fillText("煉獄...",750,550)
 	}
 }
 
@@ -224,6 +233,7 @@ function defending(event) {
 		if (tcur.width<=t1){
 			window.removeEventListener('mousemove',defending)
 			pause=true
+			c.clearRect(690,390,310,210)
 			c.font = "bold 72px Ariel"
 			c.fillStyle = "#00FF00"
 			c.fillText("閃掉了",750,550)
@@ -280,5 +290,4 @@ window.addEventListener('click', (click) => {
 		}
 	}
 })
-
 
