@@ -188,7 +188,7 @@ function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
 	var prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
-	if (dist>prev_dist) {  // bingo
+	if (dist>prev_dist && prev_dist<600) {  // bingo
 		console.log(tnow - prev_tnow)
 		console.log(prev_dist)
 		window.removeEventListener('mousemove',attacking)
