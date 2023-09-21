@@ -4,6 +4,8 @@ const c = canvas.getContext('2d')  // c for Context
 canvas.width = 1280 //innerWidth
 canvas.height = 720 //innerHeight
 
+/// load resources
+
 function ImageCollection(list, callback){
     var total = 0, images = {};   //private :)
     for(var i = 0; i < list.length; i++){
@@ -24,6 +26,8 @@ function ImageCollection(list, callback){
 
 //Create an ImageCollection to load and store my images
 var images = new ImageCollection([
+	{name: "player", url: "https://i.imgur.com/nRwyHP7.png"},
+	{name: "patk"  , url: "https://i.imgur.com/MaIVNyY.png"},
 	{name: "enemy" , url: "https://i.imgur.com/KWBFk22.png"},
 	{name: "eprep" , url: "https://i.imgur.com/CzK99KJ.png"},
 	{name: "eatk"  , url: "https://i.imgur.com/lmyvAL7.png"},
@@ -31,12 +35,18 @@ var images = new ImageCollection([
     {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"}
 ]);
 
+var a_miss = new Audio('https://od.lk/s/MTlfNTAwODc2NTVf/Miss.ogg')
+var a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
+
 window.onload = function() {
     if(!window.location.hash) {
         window.location = window.location + '#loaded';
         window.location.reload();
     }
 }
+
+
+/// definitions
 
 class Timer {
 	constructor(x,y,width,height,color) {
@@ -129,11 +139,12 @@ tcur.draw()
 c.drawImage(images.get("enemy"),100,100)
 // const eprep = new Enemy(300,200,100,'green')
 // const eatk  = new Enemy(300,200,100,'blue')
+c.drawImage(images.get("player"),605,400)
 const atk = new Button(1000,600,100,'atk')
 atk.draw()
 c.font = "bold 36px Ariel"
 c.fillStyle = "#000000"
-c.fillText("打他",1015,665)
+c.fillText("攻擊",1015,665)
 const def = new Button(100,600,100,'def')
 // def.draw()
 
@@ -148,32 +159,75 @@ var canAttack = true
 var canDefend = false
 var isAttacking = false
 var isDefending = false
+var dodgeAnim = -999
+var dodgeFollow = false
 var pause = false
+
+
+
+/// logic and execution
 
 function animate() {
 	if (pause) return
 	requestAnimationFrame(animate)
+	if (dodgeFollow) {
+		if (dodgeAnim>0) {
+			c.clearRect(605,400,395,400)
+			c.drawImage(images.get("player"),605+Math.min(1.5*(100-dodgeAnim),100),400)
+			dodgeAnim -= 2.5
+			if (dodgeAnim<=0) {
+				dodgeAnim = -999
+				isDefending = false
+				canAttack = true
+				atk.draw()
+				c.font = "bold 36px Ariel"
+				c.fillStyle = "#000000"
+				c.fillText("攻擊",1015,665)
+				dodgeFollow = false
+				pause = true
+			}
+			return
+		}
+		else return
+	}
 	c.clearRect(100,50,200,50)
 	tmax.draw()
 	tcur.draw()
 	tcur.update()
 	tnow+=1
+	if (dodgeAnim>0) {
+		c.clearRect(605,400,395,400)
+		c.drawImage(images.get("player"),605+Math.min(2*(100-dodgeAnim),100),400)
+		dodgeAnim -= 2
+		if (dodgeAnim<=0) {
+			dodgeAnim = -999
+			c.drawImage(images.get("player"),605,400)
+			c.clearRect(1100,400,100,400)
+			if (canAttack) atk.draw()
+		}
+	}
 	if (isAttacking && tcur.width<=1) {
 		console.log(tnow)
 		window.removeEventListener('mousemove',attacking)
 		pause=true
 		isAttacking = false
 		canDefend=true
+		a_miss.play()
 		c.drawImage(images.get("edodge"),100,100)
 		c.font = "bold 72px Ariel"
 		c.fillStyle = "#000000"
-		c.fillText("沒打中",750,550)
+		c.fillText("沒打中",550,350)
 		def.draw()
+		c.font = "bold 36px Ariel"
+		c.fillStyle = "#000000"
+		c.fillText("閃避",115,665)
 	}
 	else if (isDefending && tcur.width<=t2){
 		window.removeEventListener('mousemove',defending)
 		pause=true
-		c.clearRect(690,390,310,210)
+		// c.clearRect(690,390,310,210)
+		// c.clearRect(1100,400,100,400)
+		// c.drawImage(images.get("player"),605,400)
 		c.font = "bold 72px Ariel"
 		c.fillStyle = "#FF0000"
 		c.fillText("碰！",750,550)
@@ -183,7 +237,7 @@ function animate() {
 		atk.draw()
 		c.font = "bold 36px Ariel"
 		c.fillStyle = "#000000"
-		c.fillText("打他",1015,665)
+		c.fillText("攻擊",1015,665)
 	}
 	else if (isDefending && tcur.width<=t1){
 		c.drawImage(images.get("eprep"),100,100)
@@ -205,21 +259,21 @@ function attacking(event) {
 		isAttacking=false
 		canDefend=true
 		if (prev_dist<=150){
+			a_slap.play()
 			c.drawImage(images.get("ehit"),100,100)
-			c.font = "bold 96px Ariel"
-			c.fillStyle = "#000000"
-			c.fillText("啪",750,580)
+			c.drawImage(images.get("patk"),605,400)
 		}
 		else{
+			a_miss.play()
 			c.drawImage(images.get("edodge"),100,100)
 			c.font = "bold 72px Ariel"
 			c.fillStyle = "#000000"
-			c.fillText("沒打中",750,550)
+			c.fillText("沒打中",550,350)
 		}
 		def.draw()
 		c.font = "bold 36px Ariel"
 		c.fillStyle = "#000000"
-		c.fillText("躲開",115,665)
+		c.fillText("閃避",115,665)
 	}
 }
 
@@ -228,21 +282,17 @@ function defending(event) {
 	var prev_X = mouseX
 	mouseX = mousePos.x
 	// console.log(mousePos.x - prev_X)
-	if ( mousePos.x - prev_X > 150.4087 ) {  // fast enough
+	if ( mousePos.x - prev_X > 150.4087 && dodgeAnim == -999) {  // fast enough and not currently dodging
+		dodgeAnim = 100
 		// console.log(tnow - prev_tnow)
 		if (tcur.width<=t1){
 			window.removeEventListener('mousemove',defending)
-			pause=true
-			c.clearRect(690,390,310,210)
-			c.font = "bold 72px Ariel"
-			c.fillStyle = "#00FF00"
-			c.fillText("閃掉了",750,550)
-			isDefending = false
-			canAttack = true
-			atk.draw()
-			c.font = "bold 36px Ariel"
-			c.fillStyle = "#000000"
-			c.fillText("打他",1015,665)
+			a_miss.play()
+			pause = true
+			dodgeFollow = true
+			dodgeAnim = 100
+			pause = false
+			animate()
 		}
 	}
 }
@@ -254,13 +304,15 @@ window.addEventListener('click', (click) => {
 		canAttack = false
 		tcur.width = 200
 		// enemy.draw()
-		c.clearRect(1000,600,100,100)
+		// c.clearRect(1000,600,100,100)
+		c.clearRect(1100,400,100,400)
 		c.clearRect(700,350,200,200)
 		c.clearRect(290,640,520,20)
 		c.clearRect(690,390,310,210)
+		c.drawImage(images.get("player"),605,400)
 		c.drawImage(images.get("enemy"),100,100)
 		c.beginPath();
-		canvas_arrow(c, 1000, 600, 700, 400);
+		canvas_arrow(c, 1000, 600, 420, 310);
 		c.stroke();
 		isAttacking = true
 		pause=false
@@ -274,7 +326,8 @@ window.addEventListener('click', (click) => {
 			canDefend = false
 			tcur.width = 200
 			c.clearRect(100,600,100,100)
-			c.clearRect(690,390,310,210)
+			c.clearRect(400,280,600,320)
+			c.drawImage(images.get("player"),605,400)
 			c.drawImage(images.get("enemy"),100,100)
 			c.beginPath();
 			canvas_arrow(c, 300, 650, 800, 650);
