@@ -29,8 +29,8 @@ var images = new ImageCollection([
 	{name: "player", url: "https://i.imgur.com/nRwyHP7.png"},
 	{name: "patk"  , url: "https://i.imgur.com/MaIVNyY.png"},
 	{name: "enemy" , url: "https://i.imgur.com/KWBFk22.png"},
-	{name: "eprep" , url: "https://i.imgur.com/CzK99KJ.png"},
-	{name: "eatk"  , url: "https://i.imgur.com/lmyvAL7.png"},
+	{name: "eprep"  , url: "https://i.imgur.com/v4m1YWo.png"},
+	{name: "eatk"  , url: "https://i.imgur.com/gLBrsbb.png"},
     {name: "ehit"  , url: "https://i.imgur.com/QVbsRLy.png"},
     {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"},
     {name: "Rengoku1", url: "https://i.imgur.com/bO2jPd5.png"},
@@ -316,10 +316,10 @@ window.addEventListener('click', (click) => {
 		tcur.width = 200
 		// enemy.draw()
 		// c.clearRect(1000,600,100,100)
-		c.clearRect(1100,400,100,400)
-		c.clearRect(700,350,200,200)
 		c.clearRect(290,640,520,20)
 		c.clearRect(690,390,310,210)
+		c.clearRect(1100,400,100,400)
+		c.clearRect(100,100,480,270)
 		c.drawImage(images.get("player"),605,400)
 		c.drawImage(images.get("enemy"),100,100)
 		c.beginPath();
