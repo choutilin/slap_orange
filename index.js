@@ -32,8 +32,15 @@ var images = new ImageCollection([
 	{name: "eprep" , url: "https://i.imgur.com/CzK99KJ.png"},
 	{name: "eatk"  , url: "https://i.imgur.com/lmyvAL7.png"},
     {name: "ehit"  , url: "https://i.imgur.com/QVbsRLy.png"},
-    {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"}
+    {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"},
+    {name: "Rengoku1", url: "https://i.imgur.com/bO2jPd5.png"},
+    {name: "Rengoku2", url: "https://i.imgur.com/UAqZdKO.png"},
+    {name: "Rengoku3", url: "https://i.imgur.com/jM2sNDl.png"},
+    {name: "Rengoku4", url: "https://i.imgur.com/akpZ3Bl.png"},
+    {name: "", url: ""}
 ]);
+
+var rengoku = [images.get("Rengoku1"), images.get("Rengoku2"), images.get("Rengoku3"), images.get("Rengoku4")]
 
 var a_miss = new Audio('https://od.lk/s/MTlfNTAwODc2NTVf/Miss.ogg')
 var a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
@@ -244,6 +251,9 @@ function animate() {
 		c.font = "bold 72px Ariel"
 		c.fillStyle = "#000000"
 		c.fillText("煉獄...",750,550)
+	}
+	else if (isDefending) {
+		c.drawImage(rengoku[Math.floor(0.2*tcur.width)%4],100,100)
 	}
 }
 
