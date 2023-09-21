@@ -172,8 +172,8 @@ function animate() {
 	requestAnimationFrame(animate)
 	if (dodgeFollow) {
 		if (dodgeAnim>0) {
-			c.clearRect(605,400,395,400)
-			c.drawImage(images.get("player"),605+Math.min(1.5*(100-dodgeAnim),100),400)
+			c.clearRect(605,400,595,400)
+			c.drawImage(images.get("player"),605+100*Math.sin(Math.PI*dodgeAnim/100.),400)
 			dodgeAnim -= 2.5
 			if (dodgeAnim<=0) {
 				dodgeAnim = -999
@@ -196,8 +196,8 @@ function animate() {
 	tcur.update()
 	tnow+=1
 	if (dodgeAnim>0) {
-		c.clearRect(605,400,395,400)
-		c.drawImage(images.get("player"),605+Math.min(2*(100-dodgeAnim),100),400)
+		c.clearRect(605,400,595,400)
+		c.drawImage(images.get("player"),605+100*Math.sin(Math.PI*dodgeAnim/100.),400)
 		dodgeAnim -= 2
 		if (dodgeAnim<=0) {
 			dodgeAnim = -999
@@ -288,6 +288,7 @@ function defending(event) {
 		if (tcur.width<=t1){
 			window.removeEventListener('mousemove',defending)
 			a_miss.play()
+			c.drawImage(images.get("eatk"),100,100)
 			pause = true
 			dodgeFollow = true
 			dodgeAnim = 100
