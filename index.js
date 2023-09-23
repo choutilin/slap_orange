@@ -59,9 +59,9 @@ var a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
 var a_Rengoku = new Audio('https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg')
 var a_Ren_hit = new Audio('https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg')
 a_miss.volume = 0.7
-a_slap.volume = 0.6
-a_Rengoku.volume = 0.3
-a_Ren_hit.volume = 0.3
+a_slap.volume = 0.65
+a_Rengoku.volume = 0.35
+a_Ren_hit.volume = 0.25
 
 
 /// definitions
@@ -368,6 +368,10 @@ window.addEventListener('click', (click) => {
 
 
 window.onload = (event) => {
+	a_miss.onload
+	a_slap.onload
+	a_Rengoku.onload
+	a_Ren_hit.onload
 	init()
 	c.clearRect(550,250,400,150)
 	tmax.draw()
