@@ -4,6 +4,16 @@ const c = canvas.getContext('2d')  // c for Context
 canvas.width = 1280 //innerWidth
 canvas.height = 720 //innerHeight
 
+// c.fillStyle = "#000000"
+// c.fillRect(0,0,1280,720)
+// c.font = "bold 96px Ariel"
+// c.fillStyle = "#FFFFFF"
+// c.fillText("loading...",550,350)
+c.font = "bold 96px Ariel"
+c.fillStyle = "#FFFFFF"
+c.fillText("loading...",550,350)
+
+
 /// load resources
 
 function ImageCollection(list, callback){
@@ -26,10 +36,12 @@ function ImageCollection(list, callback){
 
 //Create an ImageCollection to load and store my images
 var images = new ImageCollection([
+	// {name: "bgnd"  , url: "https://i.imgur.com/9yez9IX.png"},
 	{name: "player", url: "https://i.imgur.com/nRwyHP7.png"},
 	{name: "patk"  , url: "https://i.imgur.com/MaIVNyY.png"},
+	{name: "phit"  , url: "https://i.imgur.com/5y5dNOq.png"},
 	{name: "enemy" , url: "https://i.imgur.com/KWBFk22.png"},
-	{name: "eprep"  , url: "https://i.imgur.com/v4m1YWo.png"},
+	{name: "eprep" , url: "https://i.imgur.com/v4m1YWo.png"},
 	{name: "eatk"  , url: "https://i.imgur.com/gLBrsbb.png"},
     {name: "ehit"  , url: "https://i.imgur.com/QVbsRLy.png"},
     {name: "edodge", url: "https://i.imgur.com/9O0aRui.png"},
@@ -38,19 +50,18 @@ var images = new ImageCollection([
     {name: "Rengoku3", url: "https://i.imgur.com/jM2sNDl.png"},
     {name: "Rengoku4", url: "https://i.imgur.com/akpZ3Bl.png"},
     {name: "", url: ""}
-]);
+])
 
 var rengoku = [images.get("Rengoku1"), images.get("Rengoku2"), images.get("Rengoku3"), images.get("Rengoku4")]
 
 var a_miss = new Audio('https://od.lk/s/MTlfNTAwODc2NTVf/Miss.ogg')
 var a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
-
-window.onload = function() {
-    if(!window.location.hash) {
-        window.location = window.location + '#loaded';
-        window.location.reload();
-    }
-}
+var a_Rengoku = new Audio('https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg')
+var a_Ren_hit = new Audio('https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg')
+a_miss.volume = 0.7
+a_slap.volume = 0.6
+a_Rengoku.volume = 0.3
+a_Ren_hit.volume = 0.3
 
 
 /// definitions
@@ -100,10 +111,10 @@ class Button {
 		this.width = size
 		this.height = size
 		if (type=='atk') {
-			this.color = 'red'
+			this.color = '#FF4444'
 		}
 		else if (type=='def') {
-			this.color = 'green'
+			this.color = '#44FF44'
 		}
 	}
 	draw() {
@@ -139,37 +150,36 @@ function isInside(pos, rect) {
 	return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y
 }
 
-const tmax = new Timer(100,50,200,50,'blue')
-tmax.draw()
-const tcur = new Timer(100,50,200,50,'green')
-tcur.draw()
-c.drawImage(images.get("enemy"),100,100)
-// const eprep = new Enemy(300,200,100,'green')
-// const eatk  = new Enemy(300,200,100,'blue')
-c.drawImage(images.get("player"),605,400)
+
+let tnow=0
+let t1
+let difficulty=25 //50
+let t2
+let mouseX
+let dist
+let canAttack = true
+let canDefend = false
+let isAttacking = false
+let isDefending = false
+let dodgeAnim = -999
+let dodgeFollow = false
+let pause = false
+const tmax = new Timer(100,50,200,50,'#FFFFFF')
+const tcur = new Timer(100,50,200,50,'#9146FF') // Twitch's color
 const atk = new Button(1000,600,100,'atk')
-atk.draw()
-c.font = "bold 36px Ariel"
-c.fillStyle = "#000000"
-c.fillText("攻擊",1015,665)
 const def = new Button(100,600,100,'def')
-// def.draw()
 
-
-var tnow=0
-var t1
-var difficulty=25 //50
-var t2
-var mouseX
-var dist
-var canAttack = true
-var canDefend = false
-var isAttacking = false
-var isDefending = false
-var dodgeAnim = -999
-var dodgeFollow = false
-var pause = false
-
+function init() {
+	tnow=0
+	difficulty=25 //50
+	canAttack = true
+	canDefend = false
+	isAttacking = false
+	isDefending = false
+	dodgeAnim = -999
+	dodgeFollow = false
+	pause = false
+}
 
 
 /// logic and execution
@@ -204,7 +214,7 @@ function animate() {
 	tnow+=1
 	if (dodgeAnim>0) {
 		c.clearRect(605,400,595,400)
-		c.drawImage(images.get("player"),605+100*Math.sin(Math.PI*dodgeAnim/100.),400)
+		c.drawImage(images.get("player"),605+100*Math.sin(Math.PI*dodgeAnim**2/10000.),400)
 		dodgeAnim -= 2
 		if (dodgeAnim<=0) {
 			dodgeAnim = -999
@@ -222,7 +232,7 @@ function animate() {
 		a_miss.play()
 		c.drawImage(images.get("edodge"),100,100)
 		c.font = "bold 72px Ariel"
-		c.fillStyle = "#000000"
+		c.fillStyle = "#FFFFFF"
 		c.fillText("沒打中",550,350)
 		def.draw()
 		c.font = "bold 36px Ariel"
@@ -234,12 +244,10 @@ function animate() {
 		pause=true
 		// c.clearRect(690,390,310,210)
 		// c.clearRect(1100,400,100,400)
-		// c.drawImage(images.get("player"),605,400)
-		c.font = "bold 72px Ariel"
-		c.fillStyle = "#FF0000"
-		c.fillText("碰！",750,550)
 		isDefending = false
 		canAttack = true
+		a_Ren_hit.play()
+		c.drawImage(images.get("phit"),605,400)
 		c.drawImage(images.get("eatk"),100,100)
 		atk.draw()
 		c.font = "bold 36px Ariel"
@@ -247,10 +255,9 @@ function animate() {
 		c.fillText("攻擊",1015,665)
 	}
 	else if (isDefending && tcur.width<=t1){
+		a_Rengoku.play()
+		c.drawImage(rengoku[Math.floor(0.2*tcur.width)%4],100,100)
 		c.drawImage(images.get("eprep"),100,100)
-		c.font = "bold 72px Ariel"
-		c.fillStyle = "#000000"
-		c.fillText("煉獄...",750,550)
 	}
 	else if (isDefending) {
 		c.drawImage(rengoku[Math.floor(0.2*tcur.width)%4],100,100)
@@ -277,7 +284,7 @@ function attacking(event) {
 			a_miss.play()
 			c.drawImage(images.get("edodge"),100,100)
 			c.font = "bold 72px Ariel"
-			c.fillStyle = "#000000"
+			c.fillStyle = "#FFFFFF"
 			c.fillText("沒打中",550,350)
 		}
 		def.draw()
@@ -316,15 +323,17 @@ window.addEventListener('click', (click) => {
 		tcur.width = 200
 		// enemy.draw()
 		// c.clearRect(1000,600,100,100)
-		c.clearRect(290,640,520,20)
+		c.clearRect(200,640,400,20)   // for the arrow
 		c.clearRect(690,390,310,210)
 		c.clearRect(1100,400,100,400)
 		c.clearRect(100,100,480,270)
 		c.drawImage(images.get("player"),605,400)
 		c.drawImage(images.get("enemy"),100,100)
-		c.beginPath();
-		canvas_arrow(c, 1000, 600, 420, 310);
-		c.stroke();
+		c.beginPath()
+		canvas_arrow(c, 1000, 600, 420, 310)
+		c.strokeStyle = "#00FFFF"
+		c.lineWidth = 5.
+		c.stroke()
 		isAttacking = true
 		pause=false
 		animate()
@@ -340,9 +349,11 @@ window.addEventListener('click', (click) => {
 			c.clearRect(400,280,600,320)
 			c.drawImage(images.get("player"),605,400)
 			c.drawImage(images.get("enemy"),100,100)
-			c.beginPath();
-			canvas_arrow(c, 300, 650, 800, 650);
-			c.stroke();
+			c.beginPath()
+			canvas_arrow(c, 220, 650, 550, 650)
+			c.strokeStyle = "#00FFFF"
+			c.lineWidth = 5.
+			c.stroke()
 			isDefending = true
 			pause=false
 			animate()
@@ -355,3 +366,16 @@ window.addEventListener('click', (click) => {
 	}
 })
 
+
+window.onload = (event) => {
+	init()
+	c.clearRect(550,250,400,150)
+	tmax.draw()
+	tcur.draw()
+	c.drawImage(images.get("enemy"),100,100)
+	c.drawImage(images.get("player"),605,400)
+	atk.draw()
+	c.font = "bold 36px Ariel"
+	c.fillStyle = "#000000"
+	c.fillText("攻擊",1015,665)
+}

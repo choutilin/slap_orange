@@ -1,7 +1,81 @@
-<!-- <style>
-	body {
-		margin: 0;
-	}
-</style> -->
-<canvas></canvas>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+	/*	body {margin: 0;}*/
+		.bgnd {
+			position: absolute;
+		    top: 8;
+		    left: 8;
+		    width: 1280;
+		    height: 720;
+		    z-index: 10;
+		}
+		#gameCanvas {
+			position:relative;
+			z-index:20;
+		}
+		/* Hide the checkbox input */
+		#hideCheckbox {
+			display: none;
+		}
+		/* Style for the label that looks like a button */
+		.hide-button-label {
+			position: fixed;
+		    top: 100;
+		    left: 200;
+		    width: 900;
+		    height: 400;
+		    border: 4px solid black;
+		    outline-color:    #000000;
+		    background-color: #FFFFFF;
+		    z-index:30;
+			cursor: pointer;
+		}
+		/* Style for the label when the checkbox is checked */
+		#hideCheckbox:checked + .hide-button-label {
+			display: none;
+		}
+	</style>
+</head>
+
+
+<!-- Checkbox input and label -->
+<!-- <input type="checkbox" id="hideCheckbox">
+<label for="hideCheckbox" class="hide-button-label">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam congue tortor
+eget pulvinar lobortis. Vestibulum ante ipsum primis in faucibus orci luctus
+et ultrices posuere cubilia Curae; Nam ac dolor augue. Pellentesque mi mi,
+laoreet et dolor sit amet, ultrices varius risus. Nam vitae iaculis elit.
+Aliquam mollis interdum libero. Sed sodales placerat egestas. Vestibulum ut
+arcu aliquam purus viverra dictum vel sit amet mi. Duis nisl mauris, aliquam
+sit amet luctus eget, dapibus in enim. Sed velit augue, pretium a sem
+aliquam, congue porttitor tortor. Sed tempor nisl a lorem consequat, id
+maximus erat aliquet. Sed sagittis porta libero sed condimentum. Aliquam
+finibus lectus nec ante congue rutrum. Curabitur quam quam, accumsan id
+ultrices ultrices, tempor et tellus.</label> -->
+
+<!-- <div class="fixed">
+	<h1>0</h1>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam congue tortor
+eget pulvinar lobortis. Vestibulum ante ipsum primis in faucibus orci luctus
+et ultrices posuere cubilia Curae; Nam ac dolor augue. Pellentesque mi mi,
+laoreet et dolor sit amet, ultrices varius risus. Nam vitae iaculis elit.
+Aliquam mollis interdum libero. Sed sodales placerat egestas. Vestibulum ut
+arcu aliquam purus viverra dictum vel sit amet mi. Duis nisl mauris, aliquam
+sit amet luctus eget, dapibus in enim. Sed velit augue, pretium a sem
+aliquam, congue porttitor tortor. Sed tempor nisl a lorem consequat, id
+maximus erat aliquet. Sed sagittis porta libero sed condimentum. Aliquam
+finibus lectus nec ante congue rutrum. Curabitur quam quam, accumsan id
+ultrices ultrices, tempor et tellus.</p>
+	<div>
+		<button>Start Game</button>
+	</div>
+</div> -->
+
+<img class="bgnd" src="https://i.imgur.com/AxJ7rn6.png">
+<!-- <img class="bgnd" src="./background.png"> -->
+
+<canvas id="gameCanvas"></canvas>
+
+
+
 <script src="./index.js"></script>
