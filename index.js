@@ -51,10 +51,10 @@ var rengoku = [images.get("Rengoku1"), images.get("Rengoku2"), images.get("Rengo
 
 // Define your audio file URLs
 const audioUrls = [
-	'https://od.lk/s/MTlfNTAwOTUyNTNf/Miss_exported.ogg',
-	'https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg',
-	'https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg',
-	'https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg'
+	'https://dl.dropbox.com/scl/fi/na0qiyslf8nk8x716xj56/Miss_exported.ogg?rlkey=0m66l1zwt3bv6kfy0tb0xm6g3',
+	'https://dl.dropbox.com/scl/fi/4hmi45i9npv5ifllq0nta/Blow5.ogg?rlkey=uvzy7mr48nxxjwn3qvrevdlpu',
+	'https://dl.dropbox.com/scl/fi/ienfa83ie5jht30a2d789/Rengoku.ogg?rlkey=7smz1zhwbixv8e8fmjg563zoq',
+	'https://dl.dropbox.com/scl/fi/q12mtz5oksrn6ra9qwf3i/Rengoku_hit.ogg?rlkey=kkms05nerqwugh0d71x18vmec'
 ];
 
 // Initialize a variable to keep track of loaded audio files
@@ -375,10 +375,10 @@ window.onload = (event) => {
 	// Function to run when all audio files are loaded
 	function onAllAudioLoaded() {
 	    // Your code to run after all audio files are loaded
-	    a_miss = new Audio('https://od.lk/s/MTlfNTAwOTUyNTNf/Miss_exported.ogg')
-		a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
-		a_Rengoku = new Audio('https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg')
-		a_Ren_hit = new Audio('https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg')
+	    a_miss = new Audio('https://dl.dropbox.com/scl/fi/na0qiyslf8nk8x716xj56/Miss_exported.ogg?rlkey=0m66l1zwt3bv6kfy0tb0xm6g3')
+		a_slap = new Audio('https://dl.dropbox.com/scl/fi/4hmi45i9npv5ifllq0nta/Blow5.ogg?rlkey=uvzy7mr48nxxjwn3qvrevdlpu')
+		a_Rengoku = new Audio('https://dl.dropbox.com/scl/fi/ienfa83ie5jht30a2d789/Rengoku.ogg?rlkey=7smz1zhwbixv8e8fmjg563zoq')
+		a_Ren_hit = new Audio('https://dl.dropbox.com/scl/fi/q12mtz5oksrn6ra9qwf3i/Rengoku_hit.ogg?rlkey=kkms05nerqwugh0d71x18vmec')
 		a_miss.volume = 0.7
 		a_slap.volume = 0.65
 		a_Rengoku.volume = 0.35
