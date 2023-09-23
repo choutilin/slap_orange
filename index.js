@@ -4,14 +4,9 @@ const c = canvas.getContext('2d')  // c for Context
 canvas.width = 1280 //innerWidth
 canvas.height = 720 //innerHeight
 
-// c.fillStyle = "#000000"
-// c.fillRect(0,0,1280,720)
-// c.font = "bold 96px Ariel"
-// c.fillStyle = "#FFFFFF"
-// c.fillText("loading...",550,350)
-c.font = "bold 96px Ariel"
+c.font = "bold 60px Ariel"
 c.fillStyle = "#FFFFFF"
-c.fillText("loading...",550,350)
+c.fillText("loading 很久\n請稍等...",550,350)
 
 
 /// load resources
@@ -54,14 +49,17 @@ var images = new ImageCollection([
 
 var rengoku = [images.get("Rengoku1"), images.get("Rengoku2"), images.get("Rengoku3"), images.get("Rengoku4")]
 
-var a_miss = new Audio('https://od.lk/s/MTlfNTAwODc2NTVf/Miss.ogg')
-var a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
-var a_Rengoku = new Audio('https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg')
-var a_Ren_hit = new Audio('https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg')
-a_miss.volume = 0.7
-a_slap.volume = 0.65
-a_Rengoku.volume = 0.35
-a_Ren_hit.volume = 0.25
+// Define your audio file URLs
+const audioUrls = [
+	'https://od.lk/s/MTlfNTAwOTUyNTNf/Miss_exported.ogg',
+	'https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg',
+	'https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg',
+	'https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg'
+];
+
+// Initialize a variable to keep track of loaded audio files
+let loadedAudioCount = 0;
+
 
 
 /// definitions
@@ -168,6 +166,10 @@ const tmax = new Timer(100,50,200,50,'#FFFFFF')
 const tcur = new Timer(100,50,200,50,'#9146FF') // Twitch's color
 const atk = new Button(1000,600,100,'atk')
 const def = new Button(100,600,100,'def')
+let a_miss
+let a_slap
+let a_Rengoku
+let a_Ren_hit
 
 function init() {
 	tnow=0
@@ -299,7 +301,7 @@ function defending(event) {
 	var prev_X = mouseX
 	mouseX = mousePos.x
 	// console.log(mousePos.x - prev_X)
-	if ( mousePos.x - prev_X > 150.4087 && dodgeAnim == -999) {  // fast enough and not currently dodging
+	if ( mousePos.x - prev_X > 120 && dodgeAnim == -999) {  // fast enough and not currently dodging
 		dodgeAnim = 100
 		// console.log(tnow - prev_tnow)
 		if (tcur.width<=t1){
@@ -367,19 +369,47 @@ window.addEventListener('click', (click) => {
 })
 
 
+/// Finally, start (once all audios are loaded)
+
 window.onload = (event) => {
-	a_miss.onload
-	a_slap.onload
-	a_Rengoku.onload
-	a_Ren_hit.onload
-	init()
-	c.clearRect(550,250,400,150)
-	tmax.draw()
-	tcur.draw()
-	c.drawImage(images.get("enemy"),100,100)
-	c.drawImage(images.get("player"),605,400)
-	atk.draw()
-	c.font = "bold 36px Ariel"
-	c.fillStyle = "#000000"
-	c.fillText("攻擊",1015,665)
+	// Function to run when all audio files are loaded
+	function onAllAudioLoaded() {
+	    // Your code to run after all audio files are loaded
+	    a_miss = new Audio('https://od.lk/s/MTlfNTAwOTUyNTNf/Miss_exported.ogg')
+		a_slap = new Audio('https://od.lk/s/MTlfNTAwODc3MjZf/Blow5.ogg')
+		a_Rengoku = new Audio('https://od.lk/s/MTlfNTAwOTQyNjFf/Rengoku.ogg')
+		a_Ren_hit = new Audio('https://od.lk/s/MTlfNTAwOTQyNTVf/Rengoku_hit.ogg')
+		a_miss.volume = 0.7
+		a_slap.volume = 0.65
+		a_Rengoku.volume = 0.35
+		a_Ren_hit.volume = 0.3
+	    init()
+		c.clearRect(550,250,600,150) // for the loading... text
+		tmax.draw()
+		tcur.draw()
+		c.drawImage(images.get("enemy"),100,100)
+		c.drawImage(images.get("player"),605,400)
+		atk.draw()
+		c.font = "bold 36px Ariel"
+		c.fillStyle = "#000000"
+		c.fillText("攻擊",1015,665)
+	}
+
+	// Function to load an audio file and increment the counter
+	function loadAudio(url) {
+	    const audio = new Audio(url);
+	    audio.addEventListener('canplaythrough', () => {
+	        loadedAudioCount++;
+	        if (loadedAudioCount === audioUrls.length) {
+	            // All audio files are loaded
+	            onAllAudioLoaded();
+	        }
+	    });
+	    audio.load(); // Start loading the audio file
+	}
+
+	// Load all audio files
+	audioUrls.forEach((url) => {
+	    loadAudio(url);
+	});
 }
