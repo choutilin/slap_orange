@@ -168,6 +168,7 @@ let t2
 let tnow = 0
 let prev_tnow = 0
 let dist
+let eHPdamage = 999
 let recordSpeed = true
 let recordDamage = true
 let prev_x
@@ -196,6 +197,7 @@ function init() {
 	difficulty=20 //50
 	tnow = 0
 	prev_tnow = 0
+	eHPdamage = 999
 	pHP = 300
 	eHP = 1000
 	eHP_prev = 1000
@@ -420,6 +422,7 @@ window.addEventListener('click', (click) => {
 		pause=false
 		animate()
 		dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
+		eHPdamage = 999
 		recordSpeed = true
 		recordDamage = true
 		prev_x = mousePos.x
