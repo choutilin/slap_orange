@@ -152,13 +152,17 @@ function isInside(pos, rect) {
 function eHPdecrease(damage) {
 	eHP_prev = eHP
 	eHP -= damage
-	HPanim = eHP_prev - eHP
+	eHPanim = eHP_prev - eHP
 	pause=false
 	animate()
 }
 
 function pHPdecrease(damage) {
+	pHP_prev = pHP
 	pHP -= damage
+	pHPanim = pHP_prev - pHP
+	pause=false
+	animate()
 }
 
 
@@ -175,12 +179,14 @@ let prev_x
 let prev_y
 let pHP = 300
 let eHP = 1000
+let pHP_prev = 300
 let eHP_prev = 1000
 let canAttack = true
 let canDefend = false
 let isAttacking = false
 let isDefending = false
-let HPanim = -999
+let pHPanim = -999
+let eHPanim = -999
 let dodgeAnim = -999
 let dodgeFollow = false
 let pause = false
@@ -200,12 +206,14 @@ function init() {
 	eHPdamage = 999
 	pHP = 300
 	eHP = 1000
+	pHP_prev = 300
 	eHP_prev = 1000
 	canAttack = true
 	canDefend = false
 	isAttacking = false
 	isDefending = false
-	HPanim = -999
+	pHPanim = -999
+	eHPanim = -999
 	dodgeAnim = -999
 	dodgeFollow = false
 	pause = false
@@ -237,16 +245,31 @@ function animate() {
 		}
 		else return
 	}
-	if (HPanim>0) {
+	if (eHPanim>0) {
 		c.clearRect(100,380,420,42)
 		c.globalAlpha = 0.25
-		c.drawImage(images.get("NL"),0,0,420./1000.*(eHP+HPanim),42,100,380,420./1000.*(eHP+HPanim),42)
+		c.drawImage(images.get("NL"),0,0,420./1000.*(eHP+eHPanim),42,100,380,420./1000.*(eHP+eHPanim),42)
 		c.globalAlpha = 1.0
 		c.drawImage(images.get("NL"),0,0,420./1000.*eHP,42,100,380,420./1000.*eHP,42)
-		HPanim -= 2.00001
-		if (HPanim<=0) {
+		eHPanim -= 3.50001*Math.sqrt((eHP_prev - eHP)/100.)
+		if (eHPanim<=0) {
 			pause=true
 			canDefend=true
+		}
+		return
+	}
+	else if (pHPanim>0) {
+		// c.drawImage(images.get("NL"),294,0,126,42,980,350,126,42)
+		c.clearRect(980,350,126,42)
+		c.globalAlpha = 0.25
+		c.drawImage(images.get("NL"),420-126./300.*(pHP+pHPanim),0,420-126./300.*(pHP+pHPanim),42,980+126-126./300.*(pHP+pHPanim),350,420-126./300.*(pHP+pHPanim),42)
+		c.globalAlpha = 1.0
+		c.drawImage(images.get("NL"),420-126./300.*pHP,0,420-126./300.*pHP,42,980+126-126./300.*pHP,350,420-126./300.*pHP,42)
+		// c.drawImage(images.get("NL"),0,0,420./1000.*eHP,42,100,380,420./1000.*eHP,42)
+		pHPanim -= 5.00001
+		if (pHPanim<=0) {
+			pause=true
+			canAttack=true
 		}
 		return
 	}
@@ -414,7 +437,7 @@ window.addEventListener('click', (click) => {
 		c.fillStyle = 'red'
 		c.fill()
 		c.beginPath()
-		canvas_arrow(c, 1000, 600, 420, 310)
+		canvas_arrow(c, 900, 550, 420, 310)
 		c.strokeStyle = "#00FFFF"
 		c.lineWidth = 5.
 		c.stroke()
@@ -434,7 +457,7 @@ window.addEventListener('click', (click) => {
 			canDefend = false
 			tcur.width = 200
 			c.clearRect(100,600,100,100)
-			c.clearRect(400,280,600,320) // for the diagonal arrow
+			c.clearRect(400,280,500,320) // for the diagonal arrow
 			c.drawImage(images.get("NL"),0,0,420./1000.*eHP,42,100,380,420./1000.*eHP,42)
 			c.drawImage(images.get("player"),605,400)
 			c.drawImage(images.get("enemy"),100,100)
@@ -458,29 +481,6 @@ window.addEventListener('click', (click) => {
 /// Finally, start (once all audios are loaded)
 
 window.onload = (event) => {
-	// Function to run when all audio files are loaded
-	function onAllAudioLoaded() {
-	    // Your code to run after all audio files are loaded
-	    a_miss = new Audio('https://dl.dropbox.com/scl/fi/na0qiyslf8nk8x716xj56/Miss_exported.ogg?rlkey=0m66l1zwt3bv6kfy0tb0xm6g3')
-		a_slap = new Audio('https://dl.dropbox.com/scl/fi/4hmi45i9npv5ifllq0nta/Blow5.ogg?rlkey=uvzy7mr48nxxjwn3qvrevdlpu')
-		a_Rengoku = new Audio('https://dl.dropbox.com/scl/fi/ienfa83ie5jht30a2d789/Rengoku.ogg?rlkey=7smz1zhwbixv8e8fmjg563zoq')
-		a_Ren_hit = new Audio('https://dl.dropbox.com/scl/fi/q12mtz5oksrn6ra9qwf3i/Rengoku_hit.ogg?rlkey=kkms05nerqwugh0d71x18vmec')
-		a_miss.volume = 0.7
-		a_slap.volume = 0.65
-		a_Rengoku.volume = 0.35
-		a_Ren_hit.volume = 0.3
-	    init()
-		c.clearRect(550,250,600,150) // for the loading... text
-		c.drawImage(images.get("NL"),0,0,420,42,100,380,420,42)
-		tmax.draw()
-		tcur.draw()
-		c.drawImage(images.get("enemy"),100,100)
-		c.drawImage(images.get("player"),605,400)
-		atk.draw()
-		c.font = "bold 36px Ariel"
-		c.fillStyle = "#000000"
-		c.fillText("攻擊",1015,665)
-	}
 
 	// Function to load an audio file and increment the counter
 	function loadAudio(url) {
@@ -499,4 +499,29 @@ window.onload = (event) => {
 	audioUrls.forEach((url) => {
 	    loadAudio(url);
 	});
+
+	// Function to run when all audio files are loaded
+	function onAllAudioLoaded() {
+	    // Your code to run after all audio files are loaded
+	    a_miss = new Audio('https://dl.dropbox.com/scl/fi/na0qiyslf8nk8x716xj56/Miss_exported.ogg?rlkey=0m66l1zwt3bv6kfy0tb0xm6g3')
+		a_slap = new Audio('https://dl.dropbox.com/scl/fi/4hmi45i9npv5ifllq0nta/Blow5.ogg?rlkey=uvzy7mr48nxxjwn3qvrevdlpu')
+		a_Rengoku = new Audio('https://dl.dropbox.com/scl/fi/ienfa83ie5jht30a2d789/Rengoku.ogg?rlkey=7smz1zhwbixv8e8fmjg563zoq')
+		a_Ren_hit = new Audio('https://dl.dropbox.com/scl/fi/q12mtz5oksrn6ra9qwf3i/Rengoku_hit.ogg?rlkey=kkms05nerqwugh0d71x18vmec')
+		a_miss.volume = 0.7
+		a_slap.volume = 0.65
+		a_Rengoku.volume = 0.35
+		a_Ren_hit.volume = 0.3
+	    init()
+		c.clearRect(550,250,600,150) // for the loading... text
+		c.drawImage(images.get("NL"),0,0,420,42,100,380,420,42)
+		c.drawImage(images.get("NL"),294,0,126,42,980,350,126,42)
+		tmax.draw()
+		tcur.draw()
+		c.drawImage(images.get("enemy"),100,100)
+		c.drawImage(images.get("player"),605,400)
+		atk.draw()
+		c.font = "bold 36px Ariel"
+		c.fillStyle = "#000000"
+		c.fillText("攻擊",1015,665)
+	}
 }
