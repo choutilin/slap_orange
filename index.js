@@ -1,3 +1,6 @@
+won.style.display = "none"
+lost.style.display = "none"
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  // c for Context
 
@@ -153,6 +156,7 @@ function eHPdecrease(damage) {
 	eHP_prev = eHP
 	eHP -= damage
 	eHPanim = eHP_prev - eHP
+	if (eHP<=0) won.style.display = "initial"
 	pause=false
 	animate()
 }
@@ -161,10 +165,55 @@ function pHPdecrease(damage) {
 	pHP_prev = pHP
 	pHP -= damage
 	pHPanim = pHP_prev - pHP
+	if (pHP<=0) lost.style.display = "initial"
 	pause=false
 	animate()
 }
 
+
+const wonButton = document.getElementById("wonButton")
+wonButton.addEventListener("click", function () {
+	won.style.display = "none"
+	canDefend = false
+	c.clearRect(100,600,100,100)
+	c.clearRect(400,280,500,320) // for the diagonal arrow
+	c.drawImage(images.get("player"),605,400)
+	c.drawImage(images.get("enemy"),100,100)
+	c.drawImage(images.get("NL"),0,0,420,42,100,380,420,42)
+	c.drawImage(images.get("NL"),294,0,126,42,980,350,126,42)
+	init()
+	tmax.draw()
+	tcur.draw()
+	atk.draw()
+	c.font = "bold 36px Ariel"
+	c.fillStyle = "#000000"
+	c.fillText("攻擊",1015,665)
+})
+
+const lostButton = document.getElementById("lostButton")
+lostButton.addEventListener("click", function () {
+	lost.style.display = "none"
+	init()
+	c.clearRect(200,640,400,20)   // for the arrow
+	// c.clearRect(690,390,310,210)
+	c.clearRect(1100,400,100,400)
+	c.clearRect(100,100,480,270)
+	c.drawImage(images.get("player"),605,400)
+	c.drawImage(images.get("enemy"),100,100)
+	c.drawImage(images.get("NL"),0,0,420,42,100,380,420,42)
+	c.drawImage(images.get("NL"),294,0,126,42,980,350,126,42)
+	tmax.draw()
+	tcur.draw()
+	atk.draw()
+	c.font = "bold 36px Ariel"
+	c.fillStyle = "#000000"
+	c.fillText("攻擊",1015,665)
+})
+
+const startButton = document.getElementById("startButton")
+startButton.addEventListener("click", function () {
+	welcome.style.display = "none"
+})
 
 let difficulty=20 //50
 let t1
@@ -189,7 +238,7 @@ let pHPanim = -999
 let eHPanim = -999
 let dodgeAnim = -999
 let dodgeFollow = false
-let pause = false
+let pause = true
 const tmax = new Timer(100,50,200,50,'#FFFFFF')
 const tcur = new Timer(100,50,200,50,'#9146FF') // Twitch's color
 const atk = new Button(1000,600,100,'atk')
@@ -216,7 +265,8 @@ function init() {
 	eHPanim = -999
 	dodgeAnim = -999
 	dodgeFollow = false
-	pause = false
+	pause = true
+	tcur.width = 200
 }
 
 
@@ -378,7 +428,7 @@ function attacking(event) {
 				if (eHPdamage<20) {
 					c.font = "bold 72px Ariel"
 					c.fillStyle = "#FF9900"
-					c.fillText("精準一擊！",550,350)
+					c.fillText("命中要害！",550,350)
 				}
 				eHPdecrease( 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ) ) // bonus damage to 5<eHPdamage<20
 			}
@@ -419,7 +469,7 @@ window.addEventListener('click', (click) => {
 		// enemy.draw()
 		// c.clearRect(1000,600,100,100)
 		c.clearRect(200,640,400,20)   // for the arrow
-		c.clearRect(690,390,310,210)
+		// c.clearRect(690,390,310,210)
 		c.clearRect(1100,400,100,400)
 		c.clearRect(100,100,480,270)
 		c.drawImage(images.get("player"),605,400)
@@ -467,11 +517,11 @@ window.addEventListener('click', (click) => {
 			c.lineWidth = 5.
 			c.stroke()
 			isDefending = true
-			pause=false
-			animate()
 			t1 = 180 - Math.random()*110
 			t2 = t1 - difficulty
 			prev_x = mousePos.x
+			pause=false
+			animate()
 			window.addEventListener('mousemove', defending)
 		}
 	}
