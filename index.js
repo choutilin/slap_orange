@@ -9,7 +9,7 @@ canvas.height = 720 //innerHeight
 
 c.font = "bold 60px Ariel"
 c.fillStyle = "#FFFFFF"
-c.fillText("loading 很久\n請稍等...",550,350)
+c.fillText("Loading...",800,350)
 
 
 /// load resources
@@ -405,6 +405,7 @@ function attacking(event) {
 			pause=true
 			isAttacking=false
 			if (prev_dist>300 || eHPdamage>200){
+				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
 				canDefend=true
 				a_miss.play()
 				c.drawImage(images.get("edodge"),100,100)
@@ -413,6 +414,7 @@ function attacking(event) {
 				c.fillText("打歪了",550,350)
 			}
 			else if (Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 )<138 || tnow-prev_tnow>13) {
+				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
 				canDefend=true
 				a_miss.play()
 				c.drawImage(images.get("edodge"),100,100)
@@ -421,7 +423,6 @@ function attacking(event) {
 				c.fillText("太慢了",550,350)
 			}
 			else {
-				// console.log(tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
 				a_slap.play()
 				c.drawImage(images.get("ehit"),100,100)
 				c.drawImage(images.get("patk"),605,400)
