@@ -383,14 +383,18 @@ function animate() {
 	}
 }
 
+function mouseLeaving(event) {
+	asdf
+}
+
 function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
 	var prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
-	c.beginPath()
-	c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
-	c.fillStyle = '#00FF00'
-	c.fill()
+	// c.beginPath()
+	// c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
+	// c.fillStyle = '#00FF00'
+	// c.fill()
 	if (prev_dist<600) {
 		if (recordSpeed) {
 			recordSpeed=false
@@ -505,10 +509,6 @@ window.addEventListener('click', (click) => {
 		recordDamage = true
 		prev_x = mousePos.x
 		prev_y = mousePos.y
-		canvas.addEventListener('mouseleave', (event) => {
-			// do something
-			window.removeEventListener('mouseleave',(event))
-		})
 		window.addEventListener('mousemove', attacking)
 	} else {
 		if (isInside(mousePos, def)) {
