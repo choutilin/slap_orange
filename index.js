@@ -188,6 +188,7 @@ wonButton.addEventListener("click", function () {
 	c.font = "bold 36px Ariel"
 	c.fillStyle = "#000000"
 	c.fillText("攻擊",1015,665)
+	canAttack = true
 })
 
 const lostButton = document.getElementById("lostButton")
@@ -208,11 +209,13 @@ lostButton.addEventListener("click", function () {
 	c.font = "bold 36px Ariel"
 	c.fillStyle = "#000000"
 	c.fillText("攻擊",1015,665)
+	canAttack = true
 })
 
 const startButton = document.getElementById("startButton")
 startButton.addEventListener("click", function () {
 	welcome.style.display = "none"
+	canAttack = true
 })
 
 let difficulty=20 //50
@@ -230,7 +233,7 @@ let pHP = 300
 let eHP = 1000
 let pHP_prev = 300
 let eHP_prev = 1000
-let canAttack = true
+let canAttack = false
 let canDefend = false
 let isAttacking = false
 let isDefending = false
@@ -257,7 +260,7 @@ function init() {
 	eHP = 1000
 	pHP_prev = 300
 	eHP_prev = 1000
-	canAttack = true
+	canAttack = false
 	canDefend = false
 	isAttacking = false
 	isDefending = false
@@ -384,10 +387,10 @@ function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
 	var prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
-	// c.beginPath()
-	// c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
-	// c.fillStyle = '#00FF00'
-	// c.fill()
+	c.beginPath()
+	c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
+	c.fillStyle = '#00FF00'
+	c.fill()
 	if (prev_dist<600) {
 		if (recordSpeed) {
 			recordSpeed=false
@@ -420,9 +423,10 @@ function attacking(event) {
 				c.drawImage(images.get("edodge"),100,100)
 				c.font = "bold 72px Ariel"
 				c.fillStyle = "#FFFFFF"
-				c.fillText("太慢了",550,350)
+				else c.fillText("太慢了",550,350)
 			}
 			else {
+				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
 				a_slap.play()
 				c.drawImage(images.get("ehit"),100,100)
 				c.drawImage(images.get("patk"),605,400)
@@ -501,6 +505,10 @@ window.addEventListener('click', (click) => {
 		recordDamage = true
 		prev_x = mousePos.x
 		prev_y = mousePos.y
+		canvas.addEventListener('mouseleave', (event) => {
+			// do something
+			window.removeEventListener('mouseleave',(event))
+		})
 		window.addEventListener('mousemove', attacking)
 	} else {
 		if (isInside(mousePos, def)) {
