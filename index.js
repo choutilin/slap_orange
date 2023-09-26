@@ -224,9 +224,11 @@ let t2
 let tnow = 0
 let prev_tnow = 0
 let dist
+var prev_dist
 let eHPdamage = 999
 let recordSpeed = true
 let recordDamage = true
+var mousePos
 let prev_x
 let prev_y
 let pHP = 300
@@ -241,6 +243,7 @@ let pHPanim = -999
 let eHPanim = -999
 let dodgeAnim = -999
 let dodgeFollow = false
+let didMouseLeave = false
 let pause = true
 const tmax = new Timer(100,50,200,50,'#FFFFFF')
 const tcur = new Timer(100,50,200,50,'#9146FF') // Twitch's color
@@ -268,6 +271,7 @@ function init() {
 	eHPanim = -999
 	dodgeAnim = -999
 	dodgeFollow = false
+	didMouseLeave = false
 	pause = true
 	tcur.width = 200
 }
@@ -384,8 +388,8 @@ function animate() {
 }
 
 function attacking(event) {
-	var mousePos = getMousePos(canvas, event)
-	var prev_dist = dist
+	mousePos = getMousePos(canvas, event)
+	prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
 	// c.beginPath()
 	// c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
@@ -404,47 +408,52 @@ function attacking(event) {
 			eHPdamage = Math.abs(A*300 + B*200 + C) / Math.sqrt(A**2+B**2)
 		}
 		if (dist>prev_dist) {  // bingo
-			window.removeEventListener('mousemove',attacking)
-			pause=true
-			isAttacking=false
-			if (prev_dist>300 || eHPdamage>200){
-				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
-				canDefend=true
-				a_miss.play()
-				c.drawImage(images.get("edodge"),100,100)
-				c.font = "bold 72px Ariel"
-				c.fillStyle = "#FFFFFF"
-				c.fillText("打歪了",550,350)
-			}
-			else if (Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 )<138 || tnow-prev_tnow>=8) {
-				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
-				canDefend=true
-				a_miss.play()
-				c.drawImage(images.get("edodge"),100,100)
-				c.font = "bold 72px Ariel"
-				c.fillStyle = "#FFFFFF"
-				c.fillText("太慢了",550,350)
-			}
-			else {
-				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
-				a_slap.play()
-				c.drawImage(images.get("ehit"),100,100)
-				c.drawImage(images.get("patk"),605,400)
-				if (eHPdamage<20) {
-					c.font = "bold 72px Ariel"
-					c.fillStyle = "#FF9900"
-					c.fillText("命中要害！",550,350)
-				}
-				eHPdecrease( 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ) ) // bonus damage to 5<eHPdamage<20
-			}
-			def.draw()
-			c.font = "bold 36px Ariel"
-			c.fillStyle = "#000000"
-			c.fillText("閃避",115,665)
+			attack_result(didMouseLeave)
 		}
 	}
 	prev_x = mousePos.x
 	prev_y = mousePos.y
+}
+
+function attack_result(didMouseLeave) {
+	window.removeEventListener('mousemove',attacking)
+	window.removeEventListener('mouseleave',(event))
+	pause=true
+	isAttacking=false
+	if (prev_dist>300 || eHPdamage>200 || dist<=prev_dist){
+		console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
+		canDefend=true
+		a_miss.play()
+		c.drawImage(images.get("edodge"),100,100)
+		c.font = "bold 72px Ariel"
+		c.fillStyle = "#FFFFFF"
+		c.fillText("打歪了",550,350)
+	}
+	else if (Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 )<138 || tnow-prev_tnow>=8) {
+		console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
+		canDefend=true
+		a_miss.play()
+		c.drawImage(images.get("edodge"),100,100)
+		c.font = "bold 72px Ariel"
+		c.fillStyle = "#FFFFFF"
+		c.fillText("太慢了",550,350)
+	}
+	else {
+		console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
+		a_slap.play()
+		c.drawImage(images.get("ehit"),100,100)
+		c.drawImage(images.get("patk"),605,400)
+		if (eHPdamage<20) {
+			c.font = "bold 72px Ariel"
+			c.fillStyle = "#FF9900"
+			c.fillText("命中要害！",550,350)
+		}
+		eHPdecrease( 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ) ) // bonus damage to 5<eHPdamage<20
+	}
+	def.draw()
+	c.font = "bold 36px Ariel"
+	c.fillStyle = "#000000"
+	c.fillText("閃避",115,665)
 }
 
 function defending(event) {
@@ -505,6 +514,11 @@ window.addEventListener('click', (click) => {
 		recordDamage = true
 		prev_x = mousePos.x
 		prev_y = mousePos.y
+		didMouseLeave=false
+		canvas.addEventListener('mouseleave', (event) => {
+			didMouseLeave=true
+			attack_result(true)
+		})
 		window.addEventListener('mousemove', attacking)
 	} else {
 		if (isInside(mousePos, def)) {
