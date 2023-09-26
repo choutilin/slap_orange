@@ -387,10 +387,10 @@ function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
 	var prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
-	c.beginPath()
-	c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
-	c.fillStyle = '#00FF00'
-	c.fill()
+	// c.beginPath()
+	// c.arc(mousePos.x,mousePos.y,10, 0, 2*Math.PI, false)
+	// c.fillStyle = '#00FF00'
+	// c.fill()
 	if (prev_dist<600) {
 		if (recordSpeed) {
 			recordSpeed=false
@@ -416,14 +416,14 @@ function attacking(event) {
 				c.fillStyle = "#FFFFFF"
 				c.fillText("打歪了",550,350)
 			}
-			else if (Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 )<138 || tnow-prev_tnow>13) {
+			else if (Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 )<138 || tnow-prev_tnow>=8) {
 				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
 				canDefend=true
 				a_miss.play()
 				c.drawImage(images.get("edodge"),100,100)
 				c.font = "bold 72px Ariel"
 				c.fillStyle = "#FFFFFF"
-				else c.fillText("太慢了",550,350)
+				c.fillText("太慢了",550,350)
 			}
 			else {
 				console.log(dist, prev_dist, tnow-prev_tnow, Math.sqrt( (mousePos.x-prev_x)**2 + (mousePos.y-prev_y)**2 ), eHPdamage, 100+200./15.*(20- Math.min(Math.max(5,eHPdamage),20) ))
@@ -505,10 +505,6 @@ window.addEventListener('click', (click) => {
 		recordDamage = true
 		prev_x = mousePos.x
 		prev_y = mousePos.y
-		canvas.addEventListener('mouseleave', (event) => {
-			// do something
-			window.removeEventListener('mouseleave',(event))
-		})
 		window.addEventListener('mousemove', attacking)
 	} else {
 		if (isInside(mousePos, def)) {
