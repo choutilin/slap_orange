@@ -385,6 +385,7 @@ function animate() {
 
 function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
+	// console.log(mousePos.x, mousePos.y)
 	var prev_dist = dist
 	dist = Math.sqrt( (mousePos.x-300)**2 + (mousePos.y-200)**2 )
 	// c.beginPath()
@@ -405,6 +406,7 @@ function attacking(event) {
 		}
 		if (dist>prev_dist) {  // bingo
 			window.removeEventListener('mousemove',attacking)
+			canvas.removeEventListener('mouseleave',attacking)
 			pause=true
 			isAttacking=false
 			if (prev_dist>300 || eHPdamage>200){
@@ -506,6 +508,7 @@ window.addEventListener('click', (click) => {
 		prev_x = mousePos.x
 		prev_y = mousePos.y
 		window.addEventListener('mousemove', attacking)
+		canvas.addEventListener('mouseleave', attacking )
 	} else {
 		if (isInside(mousePos, def)) {
 			if (canDefend==false) return
