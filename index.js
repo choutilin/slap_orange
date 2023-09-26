@@ -383,6 +383,10 @@ function animate() {
 	}
 }
 
+function mouseLeaving(event) {
+	asdf
+}
+
 function attacking(event) {
 	var mousePos = getMousePos(canvas, event)
 	var prev_dist = dist
