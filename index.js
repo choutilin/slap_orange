@@ -274,10 +274,23 @@ function init() {
 
 
 /// logic and execution
+//https://www.cleverti.com/cleverti-projects/why-a-proper-frame-rate-system-can-change-the-game/
+let last_frame_time_ms = 0, // The last time the loop was run
+	max_FPS = 60; // The maximum FPS we want to allow
 
-function animate() {
+function animate(timestamp) {
 	if (pause) return
+
+	// Throttle the frame rate.
+	if (timestamp < last_frame_time_ms + (1000 / max_FPS)) {
+		requestAnimationFrame(animate)
+		return;
+	}
+
+	last_frame_time_ms = timestamp;
+
 	requestAnimationFrame(animate)
+	
 	if (dodgeFollow) {
 		if (dodgeAnim>0) {
 			c.clearRect(605,400,595,400)
