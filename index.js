@@ -276,13 +276,14 @@ function init() {
 /// logic and execution
 //https://www.cleverti.com/cleverti-projects/why-a-proper-frame-rate-system-can-change-the-game/
 let last_frame_time_ms = 0, // The last time the loop was run
-	max_FPS = 60; // The maximum FPS we want to allow
+	max_FPS = 60, // The maximum FPS we want to allow
+	oddsOfWinning = 0.03; //蝦愛橘子的中獎機率
 
 function animate(timestamp) {
 	if (pause) return
 
 	// Throttle the frame rate.
-	if (timestamp < last_frame_time_ms + (1000 / max_FPS)) {
+	if (timestamp < last_frame_time_ms + (1000 / (max_FPS + oddsOfWinning))) {	//有進位問題，fps加一點魔術數字再除
 		requestAnimationFrame(animate)
 		return;
 	}
